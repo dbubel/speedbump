@@ -3,13 +3,11 @@ package negronibump
 import (
 	"net"
 	"net/http"
-	"time"
 
 	"github.com/codegangsta/negroni"
-	"github.com/dustin/go-humanize"
 	"github.com/etcinit/speedbump"
+	"github.com/go-redis/redis"
 	"github.com/unrolled/render"
-	"gopkg.in/redis.v5"
 )
 
 func RateLimit(client *redis.Client, hasher speedbump.RateHasher, max int64) negroni.HandlerFunc {
@@ -24,8 +22,8 @@ func RateLimit(client *redis.Client, hasher speedbump.RateHasher, max int64) neg
 		}
 
 		if !ok {
-			nextTime := time.Now().Add(hasher.Duration())
-			rnd.JSON(rw, 429, map[string]string{"error": "Rate limit exceeded. Try again in " + humanize.Time(nextTime)})
+			// nextTime := time.Now().Add(hasher.Duration())
+			rnd.JSON(rw, 429, map[string]string{"error": "Rate limit exceeded. Try again in "})
 		} else {
 			next(rw, r)
 		}

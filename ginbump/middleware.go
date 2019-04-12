@@ -4,12 +4,10 @@ package ginbump
 
 import (
 	"net"
-	"time"
 
-	"github.com/dustin/go-humanize"
 	"github.com/etcinit/speedbump"
 	"github.com/gin-gonic/gin"
-	"gopkg.in/redis.v5"
+	"github.com/go-redis/redis"
 )
 
 // RateLimit is a Gin middleware for rate limitting incoming requests based on
@@ -42,11 +40,11 @@ func RateLimit(client *redis.Client, hasher speedbump.RateHasher, max int64) gin
 		}
 
 		if !ok {
-			nextTime := time.Now().Add(hasher.Duration())
+			// nextTime := time.Now().Add(hasher.Duration())
 
 			c.JSON(429, gin.H{
 				"status":   "error",
-				"messages": []string{"Rate limit exceeded. Try again in " + humanize.Time(nextTime)},
+				"messages": []string{"Rate limit exceeded. Try again in "},
 			})
 			c.Abort()
 		}
@@ -81,11 +79,11 @@ func RateLimitLB(client *redis.Client, hasher speedbump.RateHasher, max int64) g
 		}
 
 		if !ok {
-			nextTime := time.Now().Add(hasher.Duration())
+			// nextTime := time.Now().Add(hasher.Duration())
 
 			c.JSON(429, gin.H{
 				"status":   "error",
-				"messages": []string{"Rate limit exceeded. Try again in " + humanize.Time(nextTime)},
+				"messages": []string{"Rate limit exceeded. Try again in "},
 			})
 			c.Abort()
 		}
